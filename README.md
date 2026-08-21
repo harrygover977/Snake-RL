@@ -1,3 +1,5 @@
+
+
 # Snake Reinforcement Learning
 
 ---
@@ -5,10 +7,6 @@
 A Reinforcement learning model that learns to play the classic game of snake made using Python and Pygame. 
 
 ---
-
-## Demo 
-
-
 
 ## ⏳ Work flow 
 - The current game state is passed to an agent.
