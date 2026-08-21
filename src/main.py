@@ -1,8 +1,10 @@
 import pygame 
 from snake import * 
 from game import *
-from fruit import *
+from  fruit import *
 import random
+from agent import *
+from graph import plot_graph
 
 pygame.init()
 game_font = pygame.font.SysFont('Comic Sans MS', 30)
@@ -19,25 +21,30 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Snake")
 
-snake_pos = (20 // 2 * SQUARE_SIZE, 15 // 2 * SQUARE_SIZE)
-fruit_pos = (random.randrange(0, grid_size[0])*SQUARE_SIZE, random.randrange(0, grid_size[1])*SQUARE_SIZE)
-
-snake = Snake(body=[snake_pos,
-               (snake_pos[0]-SQUARE_SIZE, snake_pos[1])
-               ],
-              current_direction="RIGHT",
-              next_direction="RIGHT"
-              )
 game = Game(screen, WIDTH, HEIGHT, SQUARE_SIZE, grid_size, score, game_font, MOVE_DELAY, running=True)
-fruit = Fruit(fruit_pos)
+agent = Agent()
+state = game.get_state()
 
-while game.running:
+iteration = 0
+score = 0
+
+while True:
+    game.handle_events()
     
-    game.handle_events(snake)
-            
-    game.update(snake, fruit)
+    action = agent.get_action(state)
+    next_state, reward, done = game.step(action)
+    agent.learn(state, action, reward, next_state, done)
+    state = next_state
+    
+    if game.score > score:
+        score = game.score
+    
+    if done:
+        state = game.reset()
+        agent.decay_epsilon()
+        iteration += 1
+        print(f"{iteration} - High score: {score}")
 
-    game.draw(snake, fruit)
-
+    game.draw()
     clock.tick(FPS)
     pygame.display.flip()
