@@ -4,7 +4,6 @@ from game import *
 from  fruit import *
 import random
 from agent import *
-from graph import plot_graph
 
 pygame.init()
 game_font = pygame.font.SysFont('Comic Sans MS', 30)
